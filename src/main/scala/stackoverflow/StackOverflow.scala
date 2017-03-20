@@ -18,13 +18,12 @@ object StackOverflow extends StackOverflow {
   @transient lazy val sc: SparkContext = new SparkContext(conf)
 
   /** Main function */
-  def main(args: Array[String]): Unit = {
+  def  main(args: Array[String]): Unit = {
 
     val lines   = sc.textFile("src/main/resources/stackoverflow/stackoverflow.csv")
     val raw     = rawPostings(lines)
     val grouped = groupedPostings(raw)
-    grouped.foreach(println)
-   // val scored  = scoredPostings(grouped)
+    val scored  = scoredPostings(grouped)
    // val vectors = vectorPostings(scored)
 //    assert(vectors.count() == 2121822, "Incorrect number of vectors: " + vectors.count())
 
@@ -102,7 +101,9 @@ class StackOverflow extends Serializable {
       highScore
     }
 
-    ???
+     grouped.map(x => (x._2.head._1 , answerHighScore(x._2.map(y => y._2).toArray)))
+
+
   }
 
 
